@@ -1,0 +1,915 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>CFO决策室 · 财务总监角色扮演沙盘</title>
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='18' fill='%230f1320'/><text x='50' y='68' font-size='52' text-anchor='middle' fill='%23d4af37' font-family='serif'>CFO</text></svg>">
+<link rel="stylesheet" href="https://miaoda.feishu.cn/fonts/css2?family=Noto+Serif+SC:wght@400;600;700;900&family=Noto+Sans+SC:wght@300;400;500;700&display=swap">
+<style>
+:root{
+  --bg:#0f1320;--panel:#171d2e;--panel2:#1e2640;--border:#2a3350;
+  --text:#e8e6e1;--text2:#b8c0d4;--text3:#7a849e;
+  --gold:#d4af37;--blue:#4a9eff;--red:#c44e52;--green:#4ade80;--warn:#fbbf24;--bad:#f87171;--purple:#a78bfa;
+  --serif:'Noto Serif SC',serif;--sans:'Noto Sans SC',sans-serif;
+}
+*{margin:0;padding:0;box-sizing:border-box;}
+body{background:var(--bg);color:var(--text);font-family:var(--sans);line-height:1.7;font-size:15px;}
+.num{font-variant-numeric:tabular-nums;}
+.hidden{display:none!important;}
+.wrap{max-width:1180px;margin:0 auto;padding:0 22px;}
+b,strong{color:#fff;font-weight:600;}
+
+/* ===== 顶栏 ===== */
+.topbar{position:sticky;top:0;z-index:50;background:rgba(15,19,32,.94);backdrop-filter:blur(10px);border-bottom:1px solid var(--border);}
+.topbar-in{max-width:1180px;margin:0 auto;padding:12px 22px;display:flex;align-items:center;gap:14px;}
+.brand-dot{width:11px;height:11px;border-radius:50%;background:var(--gold);flex-shrink:0;}
+.brand-name{font-family:var(--serif);font-weight:700;font-size:16px;letter-spacing:1px;}
+.top-sep{flex:1;}
+.meeting-progress{display:flex;gap:5px;align-items:center;}
+.mp-seg{width:26px;height:5px;border-radius:3px;background:var(--border);transition:.3s;}
+.mp-seg.done{background:var(--gold);}
+.mp-seg.current{background:#fff;}
+.mp-text{font-size:12px;color:var(--text3);margin-left:8px;}
+.btn-ghost{background:transparent;border:1px solid var(--border);color:var(--text2);padding:6px 14px;border-radius:6px;font-size:13px;cursor:pointer;font-family:var(--sans);transition:.2s;}
+.btn-ghost:hover{border-color:var(--gold);color:var(--gold);}
+
+/* ===== 步骤条 ===== */
+.stepper{display:flex;align-items:center;gap:0;margin:22px 0 6px;}
+.step-node{display:flex;align-items:center;gap:9px;color:var(--text3);font-size:13.5px;transition:.3s;}
+.step-node .sn-num{width:27px;height:27px;border-radius:50%;border:1.5px solid var(--border);display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:600;background:var(--panel);}
+.step-node.active{color:var(--gold);}
+.step-node.active .sn-num{border-color:var(--gold);background:rgba(212,175,55,.12);color:var(--gold);}
+.step-node.done{color:var(--green);}
+.step-node.done .sn-num{border-color:var(--green);background:rgba(74,222,128,.1);color:var(--green);}
+.step-line{flex:1;height:1.5px;background:var(--border);margin:0 12px;min-width:30px;}
+.step-line.done{background:var(--green);}
+
+/* ===== 开场 ===== */
+#view-start{min-height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:50px 22px;text-align:center;}
+.start-kicker{color:var(--gold);letter-spacing:5px;font-size:13px;margin-bottom:18px;}
+.start-title{font-family:var(--serif);font-size:clamp(34px,5.5vw,56px);font-weight:900;letter-spacing:3px;line-height:1.2;margin-bottom:8px;}
+.start-title em{font-style:normal;color:var(--gold);}
+.start-sub{color:var(--text2);max-width:720px;margin:16px auto 30px;font-size:15px;}
+.role-card{background:linear-gradient(135deg,var(--panel),var(--panel2));border:1px solid var(--border);border-radius:14px;padding:22px 26px;max-width:720px;margin:0 auto 34px;text-align:left;}
+.role-card h3{font-family:var(--serif);color:var(--gold);font-size:16px;margin-bottom:10px;letter-spacing:1px;}
+.role-card p{color:var(--text2);font-size:14px;margin-bottom:8px;}
+.flow4{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;max-width:760px;margin:0 auto 38px;}
+.flow-item{background:var(--panel);border:1px solid var(--border);border-radius:10px;padding:15px 10px;}
+.flow-item .fi-n{color:var(--gold);font-family:var(--serif);font-weight:700;font-size:17px;}
+.flow-item .fi-t{font-size:13px;color:var(--text);margin-top:5px;font-weight:500;}
+.flow-item .fi-d{font-size:11.5px;color:var(--text3);margin-top:3px;}
+.pick-row{display:grid;grid-template-columns:1fr 1fr;gap:20px;max-width:820px;width:100%;}
+.pick-card{background:var(--panel);border:1.5px solid var(--border);border-radius:16px;padding:28px 26px;cursor:pointer;transition:.25s;text-align:left;position:relative;overflow:hidden;}
+.pick-card::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;}
+.pick-card.haihe::before{background:var(--blue);}
+.pick-card.wangchao::before{background:var(--red);}
+.pick-card:hover{transform:translateY(-4px);border-color:var(--gold);}
+.pick-tag{display:inline-block;font-size:12px;padding:3px 11px;border-radius:20px;margin-bottom:14px;}
+.pick-card.haihe .pick-tag{background:rgba(74,158,255,.13);color:var(--blue);}
+.pick-card.wangchao .pick-tag{background:rgba(196,78,82,.13);color:var(--red);}
+.pick-card h2{font-family:var(--serif);font-size:24px;margin-bottom:10px;}
+.pick-card p{color:var(--text2);font-size:13.5px;margin-bottom:16px;}
+.pick-meta{font-size:12px;color:var(--text3);border-top:1px solid var(--border);padding-top:13px;display:flex;justify-content:space-between;}
+.start-foot{margin-top:34px;color:var(--text3);font-size:12.5px;letter-spacing:2px;}
+
+/* ===== 会议头 ===== */
+.meet-head{padding:26px 0 8px;}
+.meet-tag{display:inline-block;background:rgba(212,175,55,.1);border:1px solid rgba(212,175,55,.3);color:var(--gold);font-size:12.5px;padding:3px 13px;border-radius:20px;margin-bottom:13px;letter-spacing:1px;}
+.meet-title{font-family:var(--serif);font-size:clamp(22px,3vw,30px);font-weight:700;line-height:1.35;margin-bottom:12px;}
+.meet-agenda{background:var(--panel);border-left:3px solid var(--gold);padding:13px 17px;border-radius:0 8px 8px 0;color:var(--text2);font-size:14px;margin-bottom:12px;}
+.meet-situation{color:var(--text2);font-size:14.5px;}
+
+/* ===== 通用面板 ===== */
+.panel{background:var(--panel);border:1px solid var(--border);border-radius:14px;padding:22px;margin-top:18px;}
+.panel-head{display:flex;align-items:center;gap:10px;margin-bottom:16px;}
+.panel-head h3{font-family:var(--serif);font-size:17px;letter-spacing:1px;}
+.panel-head .ph-en{font-size:11px;color:var(--text3);letter-spacing:1px;text-transform:uppercase;}
+.panel-head .ph-side{margin-left:auto;font-size:12px;color:var(--text3);}
+
+/* 报表 */
+.report-grid{display:grid;grid-template-columns:1.15fr .85fr;gap:18px;}
+.metric-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:11px;}
+.metric-tile{background:var(--panel2);border-radius:9px;padding:12px 13px;border-left:3px solid var(--border);}
+.metric-tile.good{border-left-color:var(--green);}
+.metric-tile.warn{border-left-color:var(--warn);}
+.metric-tile.flag{border-left-color:var(--bad);}
+.mt-label{font-size:12px;color:var(--text3);margin-bottom:6px;}
+.mt-values{display:flex;align-items:baseline;gap:6px;flex-wrap:wrap;}
+.mt-val{font-size:17px;font-weight:700;color:#fff;}
+.mt-trend{font-size:11px;margin-top:5px;color:var(--text3);}
+.mt-trend.up{color:var(--green);}
+.mt-trend.down{color:var(--bad);}
+.chart-box{background:var(--panel2);border-radius:9px;padding:10px 8px 4px;min-height:230px;}
+#caseChart{width:100%;height:230px;}
+.report-note{margin-top:14px;background:rgba(74,158,255,.06);border:1px solid rgba(74,158,255,.2);border-radius:9px;padding:12px 15px;font-size:13.5px;color:var(--text2);}
+.cfo-quick{background:var(--panel2);border-radius:9px;padding:15px 17px;font-size:13.5px;color:var(--text2);}
+.cfo-quick h4{color:var(--gold);font-size:13px;margin-bottom:9px;letter-spacing:1px;}
+.cfo-quick li{list-style:none;padding-left:18px;position:relative;margin-bottom:8px;}
+.cfo-quick li::before{content:'◆';position:absolute;left:0;color:var(--gold);font-size:9px;top:5px;}
+
+/* 人员 */
+.people-row{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:18px;}
+.person{background:var(--panel2);border:1.5px solid var(--border);border-radius:11px;padding:14px 12px;cursor:pointer;transition:.2s;text-align:center;position:relative;}
+.person:hover{border-color:var(--text3);}
+.person.active{border-color:var(--gold);background:rgba(212,175,55,.06);}
+.person.heard::after{content:'✓';position:absolute;top:8px;right:9px;color:var(--green);font-size:12px;}
+.p-avatar{width:46px;height:46px;border-radius:50%;margin:0 auto 8px;display:flex;align-items:center;justify-content:center;font-family:var(--serif);font-weight:700;font-size:18px;color:#fff;}
+.p-role{font-size:13.5px;font-weight:600;}
+.p-name{font-size:11.5px;color:var(--text3);margin-top:2px;}
+.p-stance{display:inline-block;font-size:10.5px;padding:2px 8px;border-radius:10px;margin-top:7px;background:rgba(255,255,255,.05);color:var(--text2);}
+.talk-panel{background:var(--panel2);border-radius:11px;padding:20px;min-height:200px;}
+.talk-empty{color:var(--text3);text-align:center;padding:46px 0;font-size:14px;}
+.bubble{display:flex;gap:12px;margin-bottom:14px;animation:fadeUp .35s;}
+.bubble.right{flex-direction:row-reverse;}
+.bubble .b-avatar{width:38px;height:38px;border-radius:50%;flex-shrink:0;display:flex;align-items:center;justify-content:center;font-family:var(--serif);font-weight:700;font-size:15px;color:#fff;}
+.bubble.right .b-avatar{background:var(--gold)!important;color:#1a1a1a;}
+.b-main{max-width:82%;}
+.b-who{font-size:12px;color:var(--text3);margin-bottom:5px;}
+.bubble.right .b-who{text-align:right;}
+.b-text{background:var(--panel);border:1px solid var(--border);padding:11px 15px;border-radius:4px 12px 12px 12px;font-size:14px;color:var(--text);}
+.bubble.right .b-text{background:rgba(212,175,55,.1);border-color:rgba(212,175,55,.3);border-radius:12px 4px 12px 12px;}
+@keyframes fadeUp{from{opacity:0;transform:translateY(8px);}to{opacity:1;transform:none;}}
+.btn-probe{align-self:flex-start;margin:2px 0 14px 50px;background:transparent;border:1px dashed var(--gold);color:var(--gold);padding:6px 15px;border-radius:7px;font-size:13px;cursor:pointer;font-family:var(--sans);transition:.2s;}
+.btn-probe:hover{background:rgba(212,175,55,.1);}
+.hear-status{font-size:13px;color:var(--text2);margin-top:14px;text-align:center;}
+.hear-status b{color:var(--gold);}
+
+/* 通用主按钮 */
+.btn-main{display:block;margin:20px auto 0;background:linear-gradient(135deg,#d4af37,#c49a2e);color:#1a1a1a;border:none;padding:13px 40px;border-radius:9px;font-size:15px;font-weight:700;cursor:pointer;font-family:var(--sans);letter-spacing:2px;transition:.2s;}
+.btn-main:hover:not(:disabled){transform:translateY(-2px);box-shadow:0 8px 24px rgba(212,175,55,.25);}
+.btn-main:disabled{opacity:.35;cursor:not-allowed;}
+.btn-line{background:transparent;border:1px solid var(--border);color:var(--text2);padding:11px 26px;border-radius:9px;font-size:14px;cursor:pointer;font-family:var(--sans);}
+.btn-line:hover{border-color:var(--gold);color:var(--gold);}
+
+/* 决策选项 */
+.question-box{background:linear-gradient(135deg,rgba(212,175,55,.07),rgba(212,175,55,.02));border:1px solid rgba(212,175,55,.3);border-radius:11px;padding:17px 20px;margin-bottom:18px;}
+.question-box .qb-label{color:var(--gold);font-size:12.5px;letter-spacing:2px;margin-bottom:7px;}
+.question-box .qb-text{font-size:15.5px;font-weight:500;line-height:1.7;}
+.option{display:flex;gap:13px;align-items:flex-start;background:var(--panel2);border:1.5px solid var(--border);border-radius:10px;padding:15px 17px;margin-bottom:11px;cursor:pointer;transition:.2s;}
+.option:hover{border-color:var(--gold);}
+.option.locked{cursor:default;}
+.option-letter{width:27px;height:27px;border-radius:50%;border:1.5px solid var(--border);display:flex;align-items:center;justify-content:center;font-weight:700;font-size:13.5px;flex-shrink:0;}
+.option-text{font-size:14px;line-height:1.6;padding-top:2px;}
+.option.correct{border-color:var(--green);background:rgba(74,222,128,.08);}
+.option.correct .option-letter{background:var(--green);border-color:var(--green);color:#0f1320;}
+.option.wrong{border-color:var(--bad);background:rgba(248,113,113,.08);}
+.option.wrong .option-letter{background:var(--bad);border-color:var(--bad);color:#0f1320;}
+.option.dimmed{opacity:.5;}
+
+/* 复盘 */
+.review-panel{border:1.5px solid var(--border);border-radius:13px;overflow:hidden;margin-top:18px;animation:fadeUp .4s;}
+.review-head{padding:15px 22px;font-family:var(--serif);font-weight:700;font-size:16.5px;letter-spacing:1px;}
+.review-head.right{background:linear-gradient(90deg,rgba(74,222,128,.16),transparent);color:var(--green);border-bottom:1px solid rgba(74,222,128,.3);}
+.review-head.wrong{background:linear-gradient(90deg,rgba(248,113,113,.16),transparent);color:var(--bad);border-bottom:1px solid rgba(248,113,113,.3);}
+.review-body{padding:20px 22px;}
+.ded-block{margin-bottom:19px;}
+.ded-block h4{font-size:13.5px;color:var(--gold);letter-spacing:1px;margin-bottom:10px;display:flex;align-items:center;gap:8px;}
+.ded-block h4::before{content:'';width:4px;height:14px;background:var(--gold);border-radius:2px;}
+.crosstalk{display:flex;flex-direction:column;gap:9px;}
+.ct-item{background:var(--panel2);border-radius:9px;padding:11px 14px;font-size:13.5px;}
+.ct-who{display:inline-flex;align-items:center;gap:7px;font-weight:600;font-size:13px;margin-bottom:4px;}
+.ct-dot{width:9px;height:9px;border-radius:50%;}
+.ct-tag{font-size:10.5px;padding:1px 8px;border-radius:10px;font-weight:400;}
+.ct-tag.fact{background:rgba(74,222,128,.13);color:var(--green);}
+.ct-tag.bias{background:rgba(251,191,36,.13);color:var(--warn);}
+.ct-tag.risk{background:rgba(248,113,113,.13);color:var(--bad);}
+.ct-text{color:var(--text2);}
+.ded-text{color:var(--text2);font-size:14px;line-height:1.85;}
+.opt-analysis{border-radius:9px;padding:11px 15px;font-size:13.5px;color:var(--text2);background:var(--panel2);margin-bottom:9px;}
+.opt-analysis.right{border-left:3px solid var(--green);}
+.opt-analysis.wrong{border-left:3px solid var(--bad);}
+.oa-tag{display:inline-block;font-size:11.5px;color:var(--gold);margin-right:8px;font-weight:600;}
+.insight-box{background:linear-gradient(135deg,rgba(212,175,55,.1),rgba(212,175,55,.03));border:1px solid rgba(212,175,55,.3);border-radius:10px;padding:15px 18px;}
+.ib-title{color:var(--gold);font-family:var(--serif);font-weight:700;font-size:14px;margin-bottom:7px;letter-spacing:1px;}
+.ib-text{color:var(--text2);font-size:14px;line-height:1.8;}
+.review-foot{display:flex;justify-content:flex-end;padding:0 22px 20px;}
+
+/* 结算 */
+#view-result{padding:54px 22px;}
+.result-inner{max-width:1000px;margin:0 auto;text-align:center;}
+.result-kicker{color:var(--gold);letter-spacing:4px;font-size:13px;margin-bottom:14px;}
+.result-score{font-family:var(--serif);font-size:64px;font-weight:900;line-height:1;}
+.result-label{color:var(--text2);font-size:17px;margin:10px 0 30px;}
+.result-grid{display:grid;grid-template-columns:.9fr 1.1fr;gap:18px;text-align:left;margin-bottom:18px;}
+.radar-panel,.summary-panel{background:var(--panel);border:1px solid var(--border);border-radius:14px;padding:22px;}
+.radar-panel h4,.summary-panel h4{font-family:var(--serif);color:var(--gold);font-size:15px;margin-bottom:12px;letter-spacing:1px;}
+#radarChart{width:100%;height:320px;}
+.minutes{display:flex;flex-direction:column;gap:8px;}
+.min-item{display:flex;align-items:center;gap:11px;background:var(--panel2);border-radius:8px;padding:9px 13px;font-size:13px;}
+.min-no{color:var(--gold);font-weight:700;font-size:12px;flex-shrink:0;width:46px;}
+.min-title{flex:1;color:var(--text);}
+.min-mark{font-size:11.5px;padding:2px 9px;border-radius:10px;flex-shrink:0;}
+.min-mark.ok{background:rgba(74,222,128,.13);color:var(--green);}
+.min-mark.no{background:rgba(248,113,113,.13);color:var(--bad);}
+.summary-panel{margin-bottom:18px;text-align:left;}
+.summary-text{color:var(--text2);font-size:14px;line-height:1.9;}
+.result-actions{display:flex;gap:14px;justify-content:center;margin-top:8px;}
+
+@media(max-width:860px){
+  .report-grid,.result-grid{grid-template-columns:1fr;}
+  .people-row{grid-template-columns:repeat(2,1fr);}
+  .pick-row,.flow4{grid-template-columns:1fr;}
+  .metric-grid{grid-template-columns:repeat(2,1fr);}
+  .b-main{max-width:100%;}
+  .stepper{flex-wrap:wrap;gap:8px;}
+  .step-line{display:none;}
+}
+</style>
+</head>
+<body>
+
+<!-- ============ 视图：开场 ============ -->
+<section id="view-start">
+  <div class="start-kicker">天津大学财务管理 · 实习教学沙盘</div>
+  <h1 class="start-title">CFO <em>决策室</em></h1>
+  <p class="start-sub">你不再是旁观者，而是这家企业新任的<strong>财务总监</strong>。每场管理层会议上，你要先独立审阅报表，再听取各部门负责人的陈述与诉求，用数据甄别他们的立场，最终代表财务做出战略决断。</p>
+  <div class="role-card">
+    <h3>财务总监的一天 · 你的职责</h3>
+    <p>① 部门负责人只会站在自己的立场说话——销售要费用、生产要扩产、品牌要预算，他们的话里既有事实，也有"部门本位"的偏差；</p>
+    <p>② 你手里的<strong>三张报表</strong>是不会说谎的裁判：用数据交叉验证各方陈述，识别"听起来对、其实错"的陷阱；</p>
+    <p>③ 最终由你在增长、利润、现金与风险之间权衡，做出对<strong>企业整体</strong>而非某个部门最优的决策。</p>
+  </div>
+  <div class="flow4">
+    <div class="flow-item"><div class="fi-n">01</div><div class="fi-t">审阅报表</div><div class="fi-d">独立发现财务信号</div></div>
+    <div class="flow-item"><div class="fi-n">02</div><div class="fi-t">管理层会议</div><div class="fi-d">听取并追问各部门</div></div>
+    <div class="flow-item"><div class="fi-n">03</div><div class="fi-t">战略决断</div><div class="fi-d">四选一代表财务拍板</div></div>
+    <div class="flow-item"><div class="fi-n">04</div><div class="fi-t">会议纪要</div><div class="fi-d">复盘弦外之音与推导</div></div>
+  </div>
+  <div class="pick-row">
+    <div class="pick-card haihe" onclick="App.start('haihe')">
+      <span class="pick-tag">快消乳业 · 4 场管理层会议</span>
+      <h2>海河牛奶</h2>
+      <p>出任成长型区域乳企 CFO，在高速扩张、成本上涨、产能投资与渠道变革中，平衡增长与现金。</p>
+      <div class="pick-meta"><span>成长型企业财务</span><span>营运资金 · 资本开支 · 杜邦</span></div>
+    </div>
+    <div class="pick-card wangchao" onclick="App.start('wangchao')">
+      <span class="pick-tag">品牌酒业 · 4 场管理层会议</span>
+      <h2>王朝酒业</h2>
+      <p>出任成熟型葡萄酒企 CFO，面对周转效率、窖藏存货、品牌投入与转型抉择，盘活资产、穿越周期。</p>
+      <div class="pick-meta"><span>成熟型企业财务</span><span>资产效率 · 沉没成本 · 第二曲线</span></div>
+    </div>
+  </div>
+  <div class="start-foot">三表联动 · 跨部门研判 · 立场甄别 · 全局统筹</div>
+</section>
+
+<!-- ============ 视图：会议 ============ -->
+<div id="view-meeting" class="hidden">
+  <div class="topbar">
+    <div class="topbar-in">
+      <span class="brand-dot" id="caseDot"></span>
+      <span class="brand-name" id="caseName">企业</span>
+      <div class="top-sep"></div>
+      <div class="meeting-progress" id="meetingProgress"></div>
+      <span class="mp-text" id="meetingText"></span>
+      <button class="btn-ghost" onclick="App.showStart()">退出会议</button>
+    </div>
+  </div>
+  <div class="wrap">
+    <div class="stepper" id="stepper"></div>
+    <div class="meet-head">
+      <span class="meet-tag" id="meetTag"></span>
+      <h2 class="meet-title" id="meetTitle"></h2>
+      <div class="meet-agenda" id="meetAgenda"></div>
+      <div class="meet-situation" id="meetSituation"></div>
+    </div>
+
+    <!-- 步骤1 审阅报表 -->
+    <div class="panel" id="stepReport">
+      <div class="panel-head"><h3>审阅财务报表</h3><span class="ph-en">Review the Numbers</span><span class="ph-side">单位：万元（比率除外）</span></div>
+      <div class="report-grid">
+        <div>
+          <div class="metric-grid" id="metricGrid"></div>
+          <div class="chart-box"><div id="caseChart"></div></div>
+          <div class="report-note" id="reportNote"></div>
+        </div>
+        <div>
+          <div class="cfo-quick" id="cfoQuick"></div>
+        </div>
+      </div>
+      <button class="btn-main" id="btnToTalk" onclick="App.goTalk()">召集管理层会议 →</button>
+    </div>
+
+    <!-- 步骤2 管理层会议 -->
+    <div class="panel hidden" id="stepTalk">
+      <div class="panel-head"><h3>管理层会议 · 听取各部门陈述</h3><span class="ph-en">Executive Meeting</span><span class="ph-side">点击每位负责人，可追问</span></div>
+      <div class="people-row" id="peopleRow"></div>
+      <div class="talk-panel" id="talkPanel"><div class="talk-empty">← 点击上方任意部门负责人，开始听取他的陈述</div></div>
+      <div class="hear-status" id="hearStatus"></div>
+      <button class="btn-main" id="btnToDecide" disabled onclick="App.goDecide()">形成 CFO 决策 →</button>
+    </div>
+
+    <!-- 步骤3 决策 -->
+    <div class="panel hidden" id="stepDecide">
+      <div class="panel-head"><h3>CFO 战略决断</h3><span class="ph-en">Your Decision</span></div>
+      <div class="question-box">
+        <div class="qb-label">作为财务总监，你的决断是</div>
+        <div class="qb-text" id="questionText"></div>
+      </div>
+      <div id="optionsBox"></div>
+    </div>
+
+    <!-- 步骤4 复盘 -->
+    <div class="review-panel hidden" id="reviewPanel">
+      <div class="review-head" id="reviewHead"></div>
+      <div class="review-body" id="reviewBody"></div>
+      <div class="review-foot"><button class="btn-main" style="margin:0" id="btnNext" onclick="App.nextMeeting()">下一场会议 →</button></div>
+    </div>
+  </div>
+</div>
+
+<!-- ============ 视图：结算 ============ -->
+<section id="view-result" class="hidden">
+  <div class="result-inner">
+    <div class="result-kicker">全部会议结束 · CFO 胜任力评估</div>
+    <div class="result-score num" id="resultScore"></div>
+    <div class="result-label" id="resultLabel"></div>
+    <div class="result-grid">
+      <div class="radar-panel"><h4>CFO 五维胜任力</h4><div id="radarChart"></div></div>
+      <div class="radar-panel"><h4>历次会议纪要</h4><div class="minutes" id="minutesList"></div></div>
+    </div>
+    <div class="summary-panel"><h4>CFO 总评与成长建议</h4><div class="summary-text" id="summaryText"></div></div>
+    <div class="result-actions">
+      <button class="btn-main" style="margin:0" onclick="App.restart()">重新履职</button>
+      <button class="btn-line" onclick="App.showStart()">返回选择企业</button>
+    </div>
+  </div>
+</section>
+
+<script src="https://cdn.jsdelivr.net/npm/echarts@5.5.0/dist/echarts.min.js"></script>
+<script>const MEETINGS={
+haihe:{name:'海河牛奶',color:'#4a9eff',list:[
+{
+  tag:'第一次 · 季度经营分析会',
+  title:'繁荣下的现金危机：生意越做越大，账上怎么越来越紧',
+  agenda:'议题：营收三年年均增长35%、净利润持续为正，但货币资金从1500万降到420万、经营现金流转为-340万。管理层需要解释现金去哪了，并决定下季度经营基调。',
+  situation:'这是你出任海河牛奶财务总监后的第一次经营分析会。增长数字很漂亮，总经理在开场表扬了销售团队，而你注意到现金流量表上一个刺眼的负数。各部门负责人陆续发言。',
+  metrics:[
+    {label:'营业收入',values:['8000','10800','14580'],flag:'good',trend:'年均+35%'},
+    {label:'净利润',values:['640','810','980'],flag:'good',trend:'持续为正'},
+    {label:'经营现金流',values:['520','180','-340'],flag:'flag',trend:'由正转负'},
+    {label:'应收账款',values:['900','1600','2900'],flag:'warn',trend:'三年+222%'},
+    {label:'存货',values:['700','1300','2400'],flag:'warn',trend:'三年+243%'},
+    {label:'货币资金',values:['1500','1100','420'],flag:'flag',trend:'持续下降'},
+  ],
+  chart:{categories:['前三年','前二年','近一年'],series:[
+    {name:'净利润',type:'bar',data:[640,810,980]},
+    {name:'经营现金流',type:'line',data:[520,180,-340]}]},
+  note:'<b>利润在涨、现金在流失</b>：应收与存货增速（220%+）远超收入增速（82%），净利980万与经营现金流-340万之间约1320万的差额，正是被应收和存货占用。',
+  quick:['利润表健康：收入、净利润双增长，表面无亏损','资产负债表报警：应收+222%、存货+243%，资金被大量占用','现金流量表诚实：经营现金流由+520转为-340，已在"失血"','初步判断：这是典型的"增长性现金短缺"，而非亏损'],
+  people:[
+    {role:'销售总监',name:'王磊',initial:'王',tone:'#4a9eff',stance:'主张继续冲量',
+     says:'CFO你刚来可能不了解，我们现在订单多得接不过来，市场份额每个季度都在涨！收入增长35%就是我带着团队一家一家啃下来的。账上紧只是暂时的，只要再给我放宽一点客户账期、多招些业务员，明年收入还能再涨40%！',
+     probe:'（追问）应收款三年涨了222%、比收入涨得快得多，我们给客户的信用政策是不是放得太松了？',
+     reply:'这个……为了抢竞品的客户，确实把核心商超的账期从30天放宽到了60天，个别大客户到了90天。但这是抢占市场必要的投入嘛，销量上去了，钱早晚能收回来。',
+     ct:'销售总监说的"订单多、增长快"是事实，但他刻意回避了账期被放宽到60-90天的代价——增长是用放宽信用、垫付资金换来的。他的立场是部门业绩，不会主动告诉你应收的风险。',ctType:'bias'},
+    {role:'生产总监',name:'张建国',initial:'张',tone:'#4ade80',stance:'为旺季备货',
+     says:'存货涨是正常的！销售预测说明年还要大增长，我得提前备原料、备货啊，不然旺季断货谁负责？我们产线都在满负荷转，这是为明年的爆发做准备。',
+     probe:'（追问）2400万存货里，有多少是有明确订单的，多少是按销售"预测"备的？周转天数从28天升到52天怎么解释？',
+     reply:'说实话……大部分是按销售给的乐观预测备的，明确订单没那么多。周转确实慢了，短保产品还临期了一批，但我也是按计划生产，不能怪我。',
+     ct:'备货本身合理，但"按乐观预测而非真实订单生产"导致存货增速远超收入、周转天数近乎翻倍。生产总监把预测当成了确定性，这是存货积压的直接来源。',ctType:'bias'},
+    {role:'财务经理',name:'周敏',initial:'周',tone:'#d4af37',stance:'提示现金风险',
+     says:'总监，我把三表的勾稽算过了：今年净利润980万，但应收增加了1300万、存货增加了1100万，两项合计占用2400万，远超过利润，所以经营现金流才是负的。按现在的消耗速度，账上420万现金撑不过两个季度的刚性支出。',
+     probe:'（追问）如果维持现在的增长方式和信用政策，现金缺口会怎么演变？',
+     reply:'我做了测算：收入每再增长10%，应收和存货就要多占用约600万营运资金，自身利润根本补不上，缺口会越滚越大，除非外部融资或收紧营运资金。',
+     ct:'这是你最该信任的声音：用三表勾稽和测算说话，指出"增长本身在消耗现金"的机制，并量化了现金安全垫。CFO的判断应当建立在这类可验证的数据上。',ctType:'fact'},
+    {role:'总经理',name:'赵总',initial:'赵',tone:'#c44e52',stance:'要业绩也要稳',
+     says:'我既要增长，也不允许资金链出事。你们财务给个明确说法：到底是销售说的"暂时性紧张、继续冲"，还是真有风险？下季度的经营基调，我听你CFO的专业判断。',
+     probe:'',reply:'',
+     ct:'总经理把球踢给了你，这正是CFO的价值时刻：不能和稀泥，要用数据在"继续冲"和"踩刹车"之间给出有依据、可执行的判断。',ctType:'fact'},
+  ],
+  question:'综合报表数据与各部门陈述，作为CFO，你给总经理的下季度经营基调和核心举措建议是？',
+  options:[
+    {text:'增长势头难得，采纳销售建议继续放宽账期、扩招团队，资金紧张靠银行贷款解决',correct:false,analysis:'只顺了销售部门的立场，没有用报表验证。继续放宽账期会让应收占用滚雪球，贷款只是掩盖而非解决营运资金失控，风险后置且放大。'},
+    {text:'增长方向不变，但立即收紧客户信用政策、按真实订单排产去库存，把营运资金周转列为一号工程，让增长速度匹配现金创造能力',correct:true,analysis:'既没有否定增长（尊重销售说的市场事实），又用三表数据精准定位了现金被应收、存货占用的病根，标本兼治，是CFO该有的全局判断。'},
+    {text:'现金流为负说明已经亏损，应立即全面收缩、停止扩张',correct:false,analysis:'被一个数字吓到、因噎废食。净利润为正说明并未亏损，问题在营运资金管理而非盈利模式，全面收缩会白白丢失市场份额。'},
+    {text:'这是销售和生产部门的事，财务只负责把钱借到位就行',correct:false,analysis:'放弃了CFO的决策职责。财务不是"出纳"，而是要穿透部门立场、用数据揭示经营真相并参与战略制定。'},
+  ],
+  deduction:'把三位业务负责人的话和三张报表叠在一起，真相才完整：销售说的"高增长"属实（利润表），但他没说增长是靠把账期放宽到60-90天换来的（应收+222%）；生产说的"备货"合理，却是按乐观预测而非订单排产（存货+243%、周转天数翻倍）；财务经理的勾稽测算一锤定音——利润980万被2400万的营运资金增量吞没，经营现金流才转负。这不是亏损，而是<strong>增长速度超过了企业自身的现金创造能力</strong>。所以正确决策不是"继续冲"也不是"急刹车"，而是<strong>在保住增长方向的同时治理营运资金</strong>：收紧信用、以销定产、加快周转，让高质量的增长可持续。',
+  insight:'CFO开会的第一原则：<strong>每个部门都在讲对自己有利的"部分真相"，报表是还原"全部真相"的裁判。</strong>销售谈收入、生产谈备货都没错，但只有财务把三表连起来，才能看见企业整体的现金正在被什么吃掉。这就是"总观全局"。',
+  ability:'insight'
+},
+{
+  tag:'第二次 · 产能投资决策会',
+  title:'8000万新产线之争：建，还是不建',
+  agenda:'议题：现有产线常年满负荷、旺季缺货，生产部门申请投资8000万建智能化新产线（2个季度建成，投产后每年新增折旧480万、产能提升50%）。需要财务从可行性角度给出决断。',
+  situation:'经过一年营运资金治理，海河现金流回正、账上现金6000万。投资申请摆上桌面，生产和销售摩拳擦掌，也有人担心重资产风险。',
+  metrics:[
+    {label:'货币资金',values:['6000'],flag:'good',trend:'现金回正'},
+    {label:'产能利用率',values:['95%'],flag:'warn',trend:'已饱和'},
+    {label:'固定资产周转率',values:['3.2次'],flag:'good',trend:'行业均值2.5'},
+    {label:'资产负债率',values:['32%'],flag:'good',trend:'低于行业'},
+    {label:'需求年增速',values:['20%'],flag:'good',trend:'未来两年'},
+    {label:'投产后年折旧',values:['480'],flag:'',trend:'刚性固定成本'},
+  ],
+  chart:{categories:['本企业','行业均值'],series:[
+    {name:'固定资产周转率(次)',type:'bar',data:[3.2,2.5]},
+    {name:'产能利用率(%)',type:'bar',data:[95,78]}]},
+  note:'四项证据同时成立：<b>产能饱和（必要性）、周转率高于行业（现有资产高效）、负债率低（有安全边际）、需求确定增长（市场支撑）</b>。',
+  quick:['该不该建：利用率95%+旺季缺货，不扩产会丢订单','会不会浪费：周转率3.2>行业2.5，现有资产用得充分','能不能承受：负债率32%、现金6000万，有举债空间','风险点：新增年折旧480万是刚性固定成本，需求必须跟上'],
+  people:[
+    {role:'生产总监',name:'张建国',initial:'张',tone:'#4ade80',stance:'力主尽快扩建',
+     says:'必须建，而且要快！现在旺季天天断货，经销商都在抱怨。新产线智能化后人工还能省15%，8000万一次性投入，用十年，平均一年才800万，划算！',
+     probe:'（追问）如果未来需求不及预期，新产线投产后每年480万折旧可是不管卖不卖得掉都要计提的，测算过盈亏平衡吗？',
+     reply:'折旧这块……我们主要从产能和工艺角度考虑，盈亏平衡得财务帮我们算。但我对需求有信心，肯定卖得掉。',
+     ct:'生产总监的扩建理由（断货、省人工）成立，但他天然倾向于"要设备"，对投产后的固定成本和需求下行风险估计不足，把"有信心"当成了测算依据。',ctType:'bias'},
+    {role:'销售总监',name:'王磊',initial:'王',tone:'#4a9eff',stance:'订单支撑扩张',
+     says:'我可以拍胸脯，只要产能够，未来两年销量每年增长20%以上没问题，现在就是产能卡了我们脖子，丢了不少订单。这次信用政策收紧后，我们的订单质量也更实了。',
+     probe:'（追问）20%的增速有多少是已签框架协议、多少是预测？',
+     reply:'已签的大概能支撑一半，另一半是基于市场趋势的预测，不过我认为把握很大。',
+     ct:'相比上一次，销售的订单质量因信用收紧而更实，这是积极信号；但仍有一半增速来自预测，CFO要对"预测部分"打折看待，不能全额作为扩产依据。',ctType:'fact'},
+    {role:'财务经理',name:'周敏',initial:'周',tone:'#d4af37',stance:'给出资本结构方案',
+     says:'我测算了：我们负债率32%、行业平均45%，有举债空间；现金6000万要留足运营，不宜全部投出。建议自有资金出2000万、银行贷款3000万，其余分期投入。我们ROA约9%，贷款利率5%、税后3.75%，借钱扩产在财务上是划算的。',
+     probe:'（追问）贷款后资产负债率和每年利息压力如何？',
+     reply:'贷款后负债率约42%，仍低于行业均值；年增利息约150万，项目投产后的边际利润完全可以覆盖，安全边际充足。',
+     ct:'财务经理提供了决策最关键的四块拼图：必要性、自有资金安全垫、正财务杠杆（ROA>税后利率）、以及贷款后仍稳健的负债率。这是CFO方案的骨架。',ctType:'fact'},
+    {role:'总经理',name:'赵总',initial:'赵',tone:'#c44e52',stance:'担心重资产风险',
+     says:'我担心两点：一是自有现金只有6000万，投8000万会不会把现金流又搞紧？二是万一需求没那么好，重资产会不会把公司拖垮？财务给个稳妥方案。',
+     probe:'',reply:'',
+     ct:'总经理的担忧正是CFO必须正面回答的：扩张不是"建或不建"的二元题，而是"用什么资本结构、按什么节奏建、固定成本能否承受"的组合题。',ctType:'risk'},
+  ],
+  question:'综合产能、效率、资本结构与固定成本风险，作为CFO你对8000万产线投资的决断是？',
+  options:[
+    {text:'现金6000万不够8000万，为安全起见放弃扩产',correct:false,analysis:'只看现金存量、忽视融资能力和正杠杆。32%的低负债率意味着充足举债空间，因自有现金不够就放弃确定的增长机会，是过度保守。'},
+    {text:'扩张条件成熟，应投资；采用自有2000万+贷款3000万+分期投入的结构，控制负债率和固定成本节奏，同步盯住达产进度',correct:true,analysis:'四个维度交叉验证后既敢拍板投资，又用资本结构组合和分期投入控制了现金与杠杆风险，是收益与安全兼顾的CFO决策。'},
+    {text:'机会窗口稍纵即逝，全额贷款8000万以最快速度一次建成',correct:false,analysis:'方向对但资本结构激进。全额举债快速推高负债率和刚性利息，违背了总经理对稳健的要求，抗风险能力下降。'},
+    {text:'为重资产风险，全部改为外包代工，自己不建产线',correct:false,analysis:'代工虽轻资产，但乳业品质控制是品牌生命线，外包牺牲核心品控能力，属于因规避财务风险而损害经营根本。'},
+  ],
+  deduction:'资本开支决策要回答四个问题，而这四个问题的答案分散在不同部门口中，需要CFO拼起来：<strong>该不该建</strong>（销售的订单+生产的95%利用率——该建）、<strong>会不会浪费</strong>（财务经理的周转率3.2次高于行业，说明管理能力消化得了新产能）、<strong>能不能承受</strong>（负债率32%、现金6000万——能承受）、<strong>钱怎么来、风险怎么控</strong>（自有+贷款+分期，让负债率投后仍低于行业，用正财务杠杆放大ROE）。同时清醒认识到：投产后每年480万折旧是刚性固定成本，会提高经营杠杆，所以要同步盯住达产和需求兑现。这样，一个看似"要不要花钱"的问题，被CFO转化成了一套有数据支撑、风险可控的资本配置方案。',
+  insight:'CFO不是只会说"不"的账房，也不是来者不拒的出纳。全局观体现在：把业务部门的<strong>必要性诉求</strong>、财务的<strong>可行性数据</strong>、领导的<strong>风险担忧</strong>整合成一个"敢投资、但结构和节奏可控"的方案——这就是财务为业务赋能的方式。',
+  ability:'risk'
+},
+{
+  tag:'第三次 · 渠道战略会',
+  title:'销售费用激增之谜：谁在真正为公司赚钱',
+  agenda:'议题：今年销售费用同比+40%，收入却只增5%，总经理质疑投入产出。会议要求按渠道拆解收入、费用率与账期，重新确定渠道资源配置。',
+  situation:'电商冲击、商超费用上涨，各渠道负责人都来争取预算。你要求财务事先按渠道做了盈利性拆分，数据将在会上揭示一个反直觉的事实。',
+  metrics:[
+    {label:'商超渠道',values:['收入6000'],flag:'',trend:'费用率15% · 账期60天'},
+    {label:'餐饮学校',values:['收入3000'],flag:'',trend:'费用率12% · 账期30天'},
+    {label:'电商渠道',values:['收入4000'],flag:'warn',trend:'费用率20% · 账期15天'},
+    {label:'送奶到户',values:['收入2309'],flag:'good',trend:'费用率8% · 现款现货'},
+    {label:'销售费用增速',values:['+40%'],flag:'warn',trend:'收入仅+5%'},
+    {label:'整体费用率',values:['14.7%'],flag:'warn',trend:'同比上升'},
+  ],
+  chart:{categories:['商超','餐饮学校','电商','送奶到户'],series:[
+    {name:'渠道费用率(%)',type:'bar',data:[15,12,20,8]},
+    {name:'收入(百万)',type:'bar',data:[60,30,40,23.09]}]},
+  note:'反直觉：<b>收入最大的商超费用率不低、账期最长（60天）；最不起眼的送奶到户费用率最低（8%）、还现款现货零应收</b>。',
+  quick:['利润账：算每个渠道的费用率，送奶到户8%最优、电商20%最差','现金账：送奶到户现款现货，商超要垫付60天货款','规模陷阱：商超收入最大≠最赚钱，"大而不强"','边际效率：费用+40%只换来收入+5%，投入产出在恶化'],
+  people:[
+    {role:'商超渠道经理',name:'刘洋',initial:'刘',tone:'#4a9eff',stance:'保住最大渠道',
+     says:'商超贡献了6000万收入、是我们第一大渠道，堆头费、条码费、促销员工资该花还得花。要是省这点费用丢了货架，损失谁承担？我建议明年还要增加商超投入守住阵地。',
+     probe:'（追问）商超60天账期、15%费用率，算上资金占用成本，它的净利润率还剩多少？',
+     reply:'这个我没细算……我们考核的是销售额和货架占有率，净利润是财务的事。反正规模在这，不能丢。',
+     ct:'商超经理用"收入规模最大"争取资源，却算不清自己渠道的真实利润和资金占用。规模导向正是渠道低效的根源——他对"货架占有率"负责，不对"渠道利润"负责。',ctType:'bias'},
+    {role:'电商负责人',name:'孙悦',initial:'孙',tone:'#a78bfa',stance:'不计代价抢线上',
+     says:'电商是未来，年轻人都在线上买！现在正是抢排名、冲流量的关键期，20%的费用率（平台佣金+投流+直播）是必须交的学费。请公司再追加预算，把销量冲进类目前十！',
+     probe:'（追问）20%费用率意味着每卖100元交20元买路钱，扣除产品成本后这个渠道还赚钱吗？',
+     reply:'目前算总账确实是微利甚至略亏，但我们看的是未来，等冲到头部、有了规模效应就能盈利。',
+     ct:'电商代表趋势没错，但"先亏损冲规模、未来再盈利"是一个需要被严格验证的假设。CFO要为战略性亏损设期限和门槛，而不是无限度为"未来"买单。',ctType:'risk'},
+    {role:'送奶到户主管',name:'马芳',initial:'马',tone:'#4ade80',stance:'优质渠道被忽视',
+     says:'我们到户渠道现在2000多个社区、订户很稳定，费用率只有8%，而且都是预付订奶费、现款现货，不占公司一分钱应收。但我们人手和推广预算一直最少，希望公司能重视这块。',
+     probe:'（追问）订户复购率和获客成本大概什么水平？',
+     reply:'复购率超过70%，老客户口碑转介绍很多，获客成本反而比电商投流低得多，只是增长慢一些、需要一家家社区做。',
+     ct:'这是被规模光环掩盖的"小而美"优质渠道：低费用率、零账期、高复购、低获客成本。它增长慢，却是利润和现金质量最好的渠道，CFO要敢于为它重新配置资源。',ctType:'fact'},
+    {role:'财务经理',name:'周敏',initial:'周',tone:'#d4af37',stance:'渠道盈利性拆分',
+     says:'我把四个渠道的"利润账、现金账、增长账"都拆出来了：综合资金成本后，送奶到户的渠道净利率最高，电商最低；商超看着收入大，但60天账期一年占用资金约1000万。费用+40%、收入+5%，说明钱主要低效地砸进了商超和电商。',
+     probe:'',reply:'',
+     ct:'财务经理用"三笔账"把渠道的真实贡献算清楚了，这是对抗各渠道"各说各话"的客观依据。CFO配置资源，应跟着渠道的利润和现金质量走，而不是跟着谁声音大走。',ctType:'fact'},
+  ],
+  question:'基于分渠道的费用率、账期和增长质量，作为CFO你给出的渠道资源配置战略是？',
+  options:[
+    {text:'商超是第一大渠道，优先追加投入守住规模阵地',correct:false,analysis:'被"收入最大"误导。商超费用率不低、账期最长、资金占用最重，单纯守规模会继续拉低整体回报。'},
+    {text:'重点深耕费用率最低、现款现货的送奶到户，给电商战略性投入设盈利期限和门槛，优化收缩商超的低效费用',correct:true,analysis:'同时算清了利润账、现金账、增长账：扶持高质量渠道、约束战略性亏损渠道、压降名不副实的规模渠道，是资源再配置的全局最优解。'},
+    {text:'电商代表未来，不计代价冲类目排名',correct:false,analysis:'方向正确但失去财务纪律。没有盈利期限和门槛的"战略性亏损"很可能变成永久性亏损。'},
+    {text:'为保利润，对所有渠道一刀切削减销售费用',correct:false,analysis:'快消品渠道是生命线，一刀切会误伤送奶到户这类优质渠道、导致销量塌方。要优化结构而非整体砍费。'},
+  ],
+  deduction:'这场会议的难点在于：每个渠道负责人都在用对自己有利的指标说话——商超比"规模"、电商比"未来"、到户比"复购"。CFO必须建立统一的评价标尺，即<strong>渠道盈利性三笔账：利润账（费用率/净利率）、现金账（账期/资金占用）、增长账（边际投入产出）</strong>。用这把尺子一量，反直觉的结论浮现：规模最大的商超"大而不强"，最时髦的电商在烧钱，最不起眼的送奶到户反而利润和现金质量最优。于是资源配置的方向清晰了：<strong>扶持现金牛、约束亏损渠道、压降低效规模</strong>。这本质上是管理会计中的客户/渠道盈利性分析，也是CFO把有限资源配置到高质量增长上的核心职责。',
+  insight:'不是所有收入都是好收入，不是声音大的部门就该拿预算。CFO的全局观，是建立一套统一、客观的价值评价标准，让资源流向<strong>利润质量和现金质量最高</strong>的业务，而不是被各部门的局部叙事牵着走。',
+  ability:'dialogue'
+},
+{
+  tag:'第四次 · 年度战略会',
+  title:'三条道路之争：用杜邦框架为企业定方向',
+  agenda:'议题：海河已成区域领先乳企，明年战略路径出现分歧——销售主张全国扩张、市场主张高端化、也有人主张区域深耕。董事会要求CFO基于完整财务画像给出战略建议。当前净利率6.5%、总资产周转率1.1次、权益乘数1.67，ROE约12%。',
+  situation:'年度战略会上，三位负责人各执一词，都想为自己的部门争取明年的资源倾斜。总经理请你先用杜邦分析统一大家的语言，再给出路径建议。',
+  metrics:[
+    {label:'年营业收入',values:['1.8亿'],flag:'',trend:''},
+    {label:'销售净利率',values:['6.5%'],flag:'',trend:'盈利效率'},
+    {label:'总资产周转率',values:['1.1次'],flag:'',trend:'运营效率'},
+    {label:'权益乘数',values:['1.67'],flag:'',trend:'负债率40%'},
+    {label:'净资产收益率',values:['12%'],flag:'good',trend:'三者乘积'},
+    {label:'品牌区域',values:['区域强/全国弱'],flag:'warn',trend:''},
+  ],
+  chart:{categories:['净利率%','周转率×10','权益乘数×10','ROE%'],series:[
+    {name:'当前杜邦分解',type:'bar',data:[6.5,11,16.7,12]}]},
+  note:'杜邦恒等式：<b>ROE 12% = 净利率6.5% × 周转率1.1 × 权益乘数1.67</b>。三条路径本质是选择用哪个因子驱动ROE。',
+  quick:['ROE可拆成三个可管理因子：净利率、周转率、权益乘数','三种商业模式：高净利率、高周转率、高杠杆','快消品天然靠周转率，但当前1.1次仍有空间','战略不是三选一，关键是结合禀赋安排先后节奏'],
+  people:[
+    {role:'销售总监',name:'王磊',initial:'王',tone:'#4a9eff',stance:'主张全国扩张',
+     says:'守在天津周边天花板太低了！我建议明年大举投入、全国招商铺渠道，靠规模把资产周转率拉上去，做到全国性品牌。销售团队已经准备好了，就差市场费用和产能支持。',
+     probe:'（追问）全国化需要大量渠道铺货和广告前置投入，我们现在的现金流扛得住吗？区域样板跑通了吗？',
+     reply:'现金流……刚转稳一年，全国化前期肯定要烧钱，可能前两年利润不好看，但规模上来就好了。样板主要在华北，南方还没验证。',
+     ct:'全国化提升周转率的方向符合快消品规律，但销售低估了前置投入和现金流压力，且区域模型尚未在全国验证，节奏过快风险高。他的诉求背后是部门扩张冲动。',ctType:'bias'},
+    {role:'市场总监',name:'陈雪',initial:'陈',tone:'#a78bfa',stance:'主张高端化',
+     says:'我认为不该拼规模，应该做高附加值。开发高端鲜奶、功能酸奶、做品牌联名，把净利率从6.5%提上去，毛利高了自然赚钱，也不用打价格战。',
+     probe:'（追问）高端化提升了单瓶利润，但如果渠道和复购跟不上，新品放量困难怎么办？',
+     reply:'这确实需要销售渠道配合，光靠市场部做品牌和产品，没有渠道落地也不行，需要协同。',
+     ct:'高端化提升盈利质量是好方向，但市场总监也承认它离不开渠道和现金流支撑，单一推进孤掌难鸣。它更适合作为"先强身"的第一步而非全部。',ctType:'fact'},
+    {role:'财务经理',name:'周敏',initial:'周',tone:'#d4af37',stance:'杜邦拆解+节奏',
+     says:'我用杜邦把三条路对应到了三个因子：区域深耕和高端化主要提升净利率，全国扩张主要提升周转率，加杠杆提升权益乘数但风险大。我们现在现金刚转稳、全国模型未验证，三个因子同时猛推不现实，建议排出先后顺序。',
+     probe:'（追问）如果只能选一个先发力，从财务安全角度你建议？',
+     reply:'先提升净利率和经营现金流（高端化+区域深耕），把现金牛做厚、模型跑通，再用周转率扩张，这样ROE提升最稳健、现金流风险最小。',
+     ct:'财务经理把战略之争翻译成了统一的杜邦语言，并基于企业当前禀赋给出了因子发力的先后节奏，这正是CFO整合战略分歧的核心工具。',ctType:'fact'},
+    {role:'总经理',name:'赵总',initial:'赵',tone:'#c44e52',stance:'要可持续增长',
+     says:'我不要一时的热闹，要的是五年后还活着、而且更强。你们别各说各的，CFO你给我一个能把三方力量拧成一股绳、又不把现金流搞断的总路线。',
+     probe:'',reply:'',
+     ct:'总经理要的不是在三个部门方案里选边，而是一个有主次、有节奏、能协同、守得住现金的组合战略——这正是对CFO全局统筹能力的终极考验。',ctType:'fact'},
+  ],
+  question:'用杜邦框架整合三方诉求，结合海河"区域强、全国弱、现金刚转稳"的禀赋，你给董事会的总路线是？',
+  options:[
+    {text:'采纳销售方案，明年大举全国化扩张，优先把资产周转率冲上去',correct:false,analysis:'只用了周转率一个因子，且在现金刚转稳、全国模型未验证时前置烧钱，节奏失当，很可能重蹈第一次会议的现金危机。'},
+    {text:'采纳市场方案，全力高端化、暂缓一切扩张',correct:false,analysis:'高端化提升净利率方向对，但完全放弃周转率的成长空间、缺乏渠道协同，长期会被全国品牌挤压，偏保守。'},
+    {text:'为控制风险，收缩回天津周边区域深耕，不扩张也不高端化',correct:false,analysis:'只守不攻，虽然稳健但放弃了净利率和周转率的提升空间，ROE难以增长，在竞争中不进则退。'},
+    {text:'分阶段组合：先以高端化和区域深耕提升净利率、夯实现金牛与可复制模型，待现金和样板稳固后再稳健全国化提升周转率，杠杆保持审慎',correct:true,analysis:'理解了ROE三因子不是三选一而是有节奏的组合，让三个部门的诉求在统一路线下有序协同，兼顾了增长、盈利、现金与风险，是真正的全局战略。'},
+  ],
+  deduction:'四场会议在年度战略会上收束。销售要周转率、市场要净利率、领导要安全，看似矛盾，杜邦分析却把它们统一到一个框架里：<strong>ROE=净利率×周转率×权益乘数</strong>，三条路径不是非此即彼，而是发力顺序问题。结合海河"区域品牌强、全国弱、现金流刚转稳"的真实禀赋，正确路线是<strong>先强身、再扩张</strong>：第一步用高端化+区域深耕提升净利率、做厚现金牛、跑通可复制的盈利模型（回应市场、稳住领导）；第二步待弹药充足、样板成熟，再推动全国化提升周转率（回应销售）；全程保持审慎杠杆。这样，CFO用一个财务框架把三个部门的局部诉求，整合成了一条服务于企业长期价值的总路线。',
+  insight:'CFO的最高境界，是用统一的财务框架（这里是杜邦分析）把各部门相互冲突的局部诉求，转化为一条<strong>有主次、有节奏、可协同、守得住现金</strong>的全局战略。财务不生产业务，却决定了业务以什么顺序、用多大风险去赢。',
+  ability:['strategy','value']
+},
+]},
+wangchao:{name:'王朝酒业',color:'#c44e52',list:[
+{
+  tag:'第一次 · 年度业绩复盘会',
+  title:'高毛利的幻觉：这么赚钱，ROE为何跑不赢理财',
+  agenda:'议题：王朝综合毛利率高达58%、行业领先，但净资产收益率（ROE）仅4.2%，股东质疑资本回报。会议要用杜邦框架拆解"高毛利、低回报"的真正原因。',
+  situation:'履新王朝酒业CFO后的第一次业绩复盘。品牌部门强调58%的毛利率是核心竞争力，销售部门却在抱怨货走得慢。你需要用数据统一大家的认知。',
+  metrics:[
+    {label:'综合毛利率',values:['58%'],flag:'good',trend:'行业领先'},
+    {label:'销售净利率',values:['8%'],flag:'warn',trend:'费用吞噬'},
+    {label:'总资产周转率',values:['0.4次'],flag:'flag',trend:'显著偏低'},
+    {label:'权益乘数',values:['1.3'],flag:'',trend:'杠杆低'},
+    {label:'净资产收益率',values:['4.2%'],flag:'warn',trend:'低于资金成本'},
+    {label:'行业平均周转率',values:['0.9次'],flag:'',trend:''},
+  ],
+  chart:{categories:['毛利率','净利率','ROE'],series:[
+    {name:'王朝(%)',type:'bar',data:[58,8,4.2]},
+    {name:'快消均值(%)',type:'bar',data:[35,9,12]}]},
+  note:'关键反差：<b>毛利率58%傲视同行，ROE却只有4.2%</b>。杜邦拆解显示，0.4次的极低总资产周转率是最大短板。',
+  quick:['杜邦拆解：ROE 4.2%=净利率8%×周转率0.4×权益乘数1.3','横向对比：周转率不足行业一半，是最大短板','毛利→净利：58%降到8%，期间费用吞噬严重','初步判断：不是产品不赚钱，是资产"睡大觉"转得太慢'],
+  people:[
+    {role:'品牌总监',name:'林岚',initial:'林',tone:'#a78bfa',stance:'高毛利即竞争力',
+     says:'我们一瓶酒毛利率58%，比那些快消品高一大截，这就是品牌力！ROE低是因为我们不激进、不借债，经营很稳健。只要继续维持高端定位和高毛利，盈利能力没问题。',
+     probe:'（追问）高毛利率最终要变成股东回报，中间还要经过费用和资产周转，这两环我们表现如何？',
+     reply:'费用确实高了些……周转这块我主要管品牌，资产运营是其他部门的事。',
+     ct:'品牌总监把"毛利率高"等同于"盈利能力强"，犯了以偏概全的错误。毛利率只代表单位产品的盈利空间，她对费用吞噬和资产周转这两环选择性忽视，因为那不在她的考核范围。',ctType:'bias'},
+    {role:'销售总监',name:'郑国华',initial:'郑',tone:'#4a9eff',stance:'动销才是真问题',
+     says:'别光看毛利，货压在渠道和仓库里走不动才是实情！经销商进货意愿下降，我们一批酒铺出去要好几个月才能回款。毛利再高，卖不动、转不动，钱也回不来。',
+     probe:'（追问）从销售一线看，周转慢主要卡在哪个环节？',
+     reply:'一是终端动销慢、消费者复购不足；二是我们产品线太长，很多SKU一年卖不了多少，占着库存和资金。',
+     ct:'销售总监从一线提供了周转率低的真实证据：动销慢、长尾SKU占用资金。虽然他可能夸大困难以争取政策，但"资产转不动"的方向与报表完全吻合，是可信的关键事实。',ctType:'fact'},
+    {role:'酿酒总工程师',name:'陈国梁',initial:'陈',tone:'#4ade80',stance:'窖藏是品质根基',
+     says:'我们葡萄酒和快消品不一样，好酒是要窖藏的，原酒在橡木桶里多放几年才醇厚，存货多、周转慢是行业特性、是好事，急不得。',
+     probe:'（追问）所有存货都在"越陈越香"吗？普通基酒和滞销成品也算优质窖藏吗？',
+     reply:'那倒不是……真正能增值的是优质产区的高端原酒，普通基酒和卖不动的成品放再久也不会增值，这部分确实该理一理。',
+     ct:'总工指出了葡萄酒长周期的行业特性（部分成立），但在追问下也承认并非所有存货都增值。CFO要区分"战略性窖藏"和"被动积压"，不能用行业特性掩盖低效库存。',ctType:'fact'},
+    {role:'财务经理',name:'吴静',initial:'吴',tone:'#d4af37',stance:'杜邦拆解定位',
+     says:'总监，杜邦拆解很清楚：ROE=净利率×周转率×权益乘数，我们8%×0.4×1.3=4.2%。短板不在毛利率、也不在杠杆，而在周转率——大量资金沉淀在窖藏存货和闲置产能里，一年只周转0.4次，相当于2.5年才循环一次。',
+     probe:'',reply:'',
+     ct:'财务经理用杜邦公式精准定位了短板因子（周转率），把"感觉不赚钱"变成了可管理的具体问题。这是CFO统一管理层认知的客观依据。',ctType:'fact'},
+  ],
+  question:'毛利率58%、ROE却仅4.2%，作为CFO，你对王朝盈利能力症结的判断和主攻方向是？',
+  options:[
+    {text:'毛利率还不够高，应继续提价、强化高端定位来提升盈利',correct:false,analysis:'看错了短板。毛利率已行业领先，继续提价可能进一步压制动销、让周转率雪上加霜。'},
+    {text:'症结是极低的资产周转率：资金沉淀在窖藏存货和闲置产能中，主攻方向是盘活资产、精简长尾SKU、提升运营效率，而非继续提价',correct:true,analysis:'用杜邦框架抓住了真正的短板因子，区分了行业特性与低效占用，诊断准确、方向对症。'},
+    {text:'ROE低是因为杠杆太低，应大量举债做高权益乘数',correct:false,analysis:'在周转率仅0.4、资产效率低下时加杠杆，只会放大低效资产的风险，是在错误的因子上用力。'},
+    {text:'葡萄酒天生周转慢，属于行业常态，无需干预',correct:false,analysis:'行业均值0.9次而我们0.4次，差距是自身效率问题而非纯行业特性，用"行业常态"解释会丧失改进动力。'},
+  ],
+  deduction:'这场复盘会是一次破除"高毛利迷思"的认知统一过程。品牌总监看到的58%毛利率只是回报链的第一环；沿"毛利率→净利率→总资产报酬率→ROE"走下去，费用把58%侵蚀到8%，更致命的是0.4次的周转率让资产2.5年才循环一次。销售的一线反馈（动销慢、长尾SKU）和总工的追问回答（并非所有存货都增值）共同印证了财务经理的杜邦拆解：<strong>王朝的问题不是产品不赚钱，而是资产转得太慢、钱在"睡大觉"</strong>。因此主攻方向是资产运营效率——盘活窖藏、精简SKU、提升动销，而不是在已经很高的毛利率上继续提价。',
+  insight:'CFO要带管理层建立"回报链"全局观：任何单一比率都会骗人，<strong>毛利率高不等于股东回报高</strong>。用杜邦把最终回报（ROE）一路拆到可管理的因子，才能让各部门从"各自表功"转向"共同补短板"。',
+  ability:'insight'
+},
+{
+  tag:'第二次 · 存货管理专题会',
+  title:'沉睡的窖藏：1.2亿存货，是资产还是负担',
+  agenda:'议题：存货占总资产40%、周转天数长达900天、占用资金1.2亿。生产部门主张多囤原酒"越陈越香"，财务部门关注资金占用。会议需确定存货分类管理策略。',
+  situation:'资产负债表上最大的一块资产就是存货。围绕"该不该继续囤酒"，酿酒、销售、财务三方分歧明显，需要你用"持有回报率"统一判断标准。',
+  metrics:[
+    {label:'存货占总资产',values:['40%'],flag:'warn',trend:'偏高'},
+    {label:'存货周转天数',values:['900天'],flag:'flag',trend:'约2.5年'},
+    {label:'陈酿原酒占比',values:['65%'],flag:'',trend:'需长期窖藏'},
+    {label:'存货占用资金',values:['1.2亿'],flag:'warn',trend:''},
+    {label:'资金机会成本',values:['5%/年'],flag:'',trend:''},
+    {label:'高端原酒增值率',values:['6%/年'],flag:'good',trend:''},
+  ],
+  chart:{categories:['Q1','Q2','Q3','Q4','Q5','Q6','Q7','Q8'],series:[
+    {name:'存货(千万)',type:'line',data:[8,8.6,9.3,10,10.8,11.3,11.7,12]}]},
+  note:'存货的两面性：<b>高端原酒年增值6%>资金成本5%，是"会增值的存货"；普通基酒和滞销成品不增值却占用资金，是负担</b>。',
+  quick:['存货周转900天，资金平均被占用2.5年','分类看：高端原酒增值6%>资金成本5%，持有创造价值','普通基酒/滞销成品不增值，还产生仓储成本和减值风险','判断标准：每类存货的持有回报率是否高于资本成本'],
+  people:[
+    {role:'酿酒总工程师',name:'陈国梁',initial:'陈',tone:'#4ade80',stance:'好酒要多存',
+     says:'葡萄酒是时间的艺术！优质原酒在橡木桶和酒窖里每多存一年，品质和价值都在涨，这是我们高端酒的根基。我建议扩大优质原酒储备，存货多点不是坏事，是家底厚。',
+     probe:'（追问）现在账上1.2亿存货，是不是全部都在增值？普通基酒和滞销成品的持有回报是多少？',
+     reply:'优质原酒确实在增值，但你说的普通基酒、还有那几个卖不动的成品系列，放着也不会变好，反而占酒窖、占资金，这部分我同意清理。',
+     ct:'总工主张多囤有其专业合理性——高端原酒确实越陈越香、增值率高于资金成本；但他本能地把"多存好酒"扩大成"多存所有酒"，追问后才区分出优质与低效存货。',ctType:'bias'},
+    {role:'销售总监',name:'郑国华',initial:'郑',tone:'#4a9eff',stance:'滞销品拖累',
+     says:'我这边最清楚哪些是死库存：有几个老产品系列经销商根本不愿进货，在仓库放了两三年；还有大量普通基酒，对应产品卖不动，原酒也就一直耗着。这些占着1.2亿资金，不如清掉回笼现金。',
+     probe:'（追问）如果清理这部分低效存货，对正常销售和高端酒供应有没有影响？',
+     reply:'基本没影响，清的都是长尾滞销品；高端原酒我们坚决不能动，那是未来高端产品的命根子。',
+     ct:'销售提供了低效存货的清单视角，并清醒地主张"清滞销、保高端"，与分类管理思路一致，是可信的业务输入。',ctType:'fact'},
+    {role:'财务经理',name:'吴静',initial:'吴',tone:'#d4af37',stance:'算持有回报率',
+     says:'我建议建立统一标尺：每类存货算"持有回报率"。高端陈酿原酒年增值约6%，高于5%的资金机会成本，持有就是在创造价值，应作为战略资产；普通基酒和滞销成品不仅不增值，还要承担酒窖仓储、损耗和减值，持有回报率为负，应加快去化。',
+     probe:'（追问）分类管理后，对报表和现金有什么改善？',
+     reply:'清理低效存货可回笼数千万现金、把周转天数从900天往下压，同时保留高端原酒不影响未来溢价，资产质量和现金双改善。',
+     ct:'财务经理给出了可操作的统一判断标准（持有回报率vs资本成本）和分类处置方案，把"存还是清"的立场之争变成了量化决策，这是CFO方案的核心。',ctType:'fact'},
+    {role:'总经理',name:'钱总',initial:'钱',tone:'#c44e52',stance:'要品质也要效率',
+     says:'我既不想为了短期现金把好酒贱卖、伤了品质根基，也不能容忍1.2亿资金长年趴在仓库里。财务给我一个"哪些该存、哪些该清"的明确办法。',
+     probe:'',reply:'',
+     ct:'总经理的要求点明了CFO的任务：不能笼统地说"存货高或低"，而要穿透科目、分类施策，既守住高端资产、又盘活低效占用。',ctType:'fact'},
+  ],
+  question:'面对占总资产40%的存货，作为CFO你确定的存货管理策略是？',
+  options:[
+    {text:'葡萄酒越陈越香，应尽可能多囤原酒、扩大储备',correct:false,analysis:'以偏概全。只有高端原酒增值率高于资金成本，普通基酒和滞销成品多囤只会持续毁损价值。'},
+    {text:'分类管理：高端陈酿原酒作为战略资产持有（增值率>资金成本），普通基酒和滞销成品加快去化回笼现金，并建立存货持有回报率的动态监控',correct:true,analysis:'穿透会计科目看清经济实质，用统一的回报率标准分类施策，兼顾了品质根基与资金效率，是业财融合的全局判断。'},
+    {text:'为快速回笼现金，把包括高端原酒在内的存货全部折价清库',correct:false,analysis:'误杀优质战略资产。高端陈酿是品牌和未来溢价的根基，清空等于自毁产品力。'},
+    {text:'存货在报表上是资产，无需特别处理',correct:false,analysis:'科目分类不等于经济实质，长期不能变现、回报低于资本成本的资产，实质上是"披着资产外衣的成本"。'},
+  ],
+  deduction:'这是一堂"穿透会计科目看经济实质"的训练。账面上存货统一列示为资产，但CFO要按<strong>持有回报率是否高于资本成本</strong>把它分成两类：高端陈酿原酒年增值6%、高于5%的资金成本，持有本身创造价值、还是品牌护城河，应战略性保留；普通基酒和滞销成品不增值、反耗仓储和减值，是资金黑洞，应坚决去化。总工"越陈越香"的专业判断只适用于前者，销售"清理死库存"的诉求适用于后者，财务经理的回报率标尺把两者统一了起来。最终策略既守住了好酒的根基，又盘活了沉睡的资金，让900天的周转天数开始下降。',
+  insight:'同样叫"存货"，有的是增值资产、有的是资金黑洞。CFO的全局观是<strong>不被会计科目名称迷惑，用"回报率vs资本成本"这把统一标尺重估每一项资产</strong>——这个思想同样适用于应收账款、固定资产、对外投资等所有资产的管理。',
+  ability:'dialogue'
+},
+{
+  tag:'第三次 · 品牌预算专题会',
+  title:'4000万广告之争：当期费用，还是长期资产',
+  agenda:'议题：为扭转品牌老化，市场部申请连续两年、每年投入4000万品牌广告。这将使当年净利润从3200万骤降至约200万。需要财务判断这笔投入值不值、节奏怎么控。',
+  situation:'品牌老化是王朝的隐忧，但大额广告会让当期利润表非常难看。市场部要预算、总经理要业绩，你需要讲清品牌投入的财务逻辑。',
+  metrics:[
+    {label:'计划年广告投入',values:['4000'],flag:'',trend:'连续2年'},
+    {label:'投入前净利润',values:['3200'],flag:'',trend:''},
+    {label:'投入后净利润',values:['约200'],flag:'flag',trend:'当期大降'},
+    {label:'会计处理',values:['全部费用化'],flag:'',trend:'计入销售费用'},
+    {label:'品牌溢价提升',values:['预计+8%'],flag:'good',trend:'长期受益'},
+    {label:'效果持续期',values:['3-5年'],flag:'good',trend:'跨期受益'},
+  ],
+  chart:{categories:['投入前','投入年1','投入年2','回收年1','回收年2','回收年3'],series:[
+    {name:'净利润(百万)',type:'bar',data:[32,2,2,38,45,50]}]},
+  note:'核心矛盾：<b>会计上广告费100%计入当期费用、立刻冲减利润；经济上品牌价值积累后，未来3-5年持续受益</b>——投入期与受益期错配。',
+  quick:['准则要求：广告费当期全额费用化，不能资本化','经济实质：品牌是长期无形资产，受益3-5年','错配：现金和费用在当期，收益在未来，短期利润承压','决策关键：现金流能否承受 + 跨期投入产出是否划算'],
+  people:[
+    {role:'品牌总监',name:'林岚',initial:'林',tone:'#a78bfa',stance:'力主大手笔投放',
+     says:'品牌老化是生死问题，再不大声量投放，年轻人都不知道王朝是谁了！4000万两年投下去，品牌溢价、复购都会回来，这是投资未来，不能因为当年利润难看就不投。',
+     probe:'（追问）这4000万能带来多少可量化的回报？如果效果不及预期，止损线设在哪？',
+     reply:'品牌效果确实难精确算到每一块钱……但不投肯定没效果。止损线我们可以一起定，比如跟踪品牌溢价和复购率。',
+     ct:'品牌总监主张投入的战略方向正确（品牌确是酒业核心资产），但她倾向于把"长期主义"当成无需量化的理由，追问后才接受设定可跟踪指标和止损线。CFO要让情怀可度量。',ctType:'bias'},
+    {role:'总经理',name:'钱总',initial:'钱',tone:'#c44e52',stance:'担心当期业绩',
+     says:'我同意品牌重要，但净利润从3200万掉到200万，报表太难看，董事会那边没法交代，会不会影响我们的考核和融资？能不能少投点、或者分几年慢慢投？',
+     probe:'',reply:'',
+     ct:'总经理代表了短期业绩约束，这不是保守，而是真实存在的利益相关方压力。CFO必须同时回应长期投入价值和短期报表承受力，不能只讲一面。',ctType:'risk'},
+    {role:'销售总监',name:'郑国华',initial:'郑',tone:'#4a9eff',stance:'投放要带动动销',
+     says:'我支持投广告，但有个条件：投放必须和终端动销、经销商进货挂钩，不能只做空中楼阁的形象广告。我见过太多广告打得响、货架上却卖不动的案例，钱要花在能带动实际销售的地方。',
+     probe:'',reply:'',
+     ct:'销售补充了关键的落地视角：品牌投入要与动销转化衔接，否则就是"叫好不叫座"。这提醒CFO在预算结构上要求品效协同，是有价值的业务约束。',ctType:'fact'},
+    {role:'财务经理',name:'吴静',initial:'吴',tone:'#d4af37',stance:'讲清跨期逻辑',
+     says:'按会计准则广告费必须当期费用化、不能资本化，所以投入当年利润必然难看，这是规则改不了。但从经济实质看，品牌资产受益期3-5年，我测算了回收曲线：前两年承压，第三年起超额补偿，整体净现值为正。前提是我们现金能覆盖、且设定跨期ROI跟踪和止损点。',
+     probe:'（追问）现金流能支撑连续两年每年4000万吗？',
+     reply:'我们经营现金流稳定、无大额到期负债，可以承受，但建议分批拨付、与品牌指标达成情况挂钩，而不是年初一次性打足。',
+     ct:'财务经理同时讲清了三件事：会计规则（必须费用化）、经济价值（跨期净现值为正）、风险控制（现金可承受+分批拨付+挂钩指标），这正是CFO决策的完整逻辑链。',ctType:'fact'},
+  ],
+  question:'品牌广告会让当期利润"难看"却惠及未来多年，作为CFO你的决断是？',
+  options:[
+    {text:'为保当期利润和考核，取消或大幅压缩品牌投入',correct:false,analysis:'被单期利润表绑架。品牌是酒业核心资产，压缩投入虽美化当期利润，却透支长期竞争力，是短视。'},
+    {text:'在现金流可承受范围内坚持投入，但分批拨付、与品牌溢价/复购等跨期指标挂钩并设止损线，同时向董事会讲清投入期与受益期错配的利润曲线',correct:true,analysis:'既尊重费用化的会计准则、又用长期资产视角评估回报，还用分批拨付和指标挂钩控制风险、管理利益相关方预期，是战略财务的全局解法。'},
+    {text:'既然品牌是长期资产，就把广告费资本化、不计入当期费用',correct:false,analysis:'违反会计准则。广告宣传费按规定必须费用化，不能为美化报表而违规资本化。'},
+    {text:'品牌效果无法量化，全额一次性拨付、凭市场部判断执行',correct:false,analysis:'放弃了财务的把关职责。长期投入同样要设定可跟踪的跨期指标、止损线和拨付节奏，不能"凭感觉"。'},
+  ],
+  deduction:'这场会议的本质是<strong>会计利润与经济价值的时间错配</strong>。品牌总监看到长期价值、总经理看到短期压力、销售要求落地动销，三方都对了一部分。CFO的专业体现在把三层逻辑讲清楚并设计出可执行方案：第一，<strong>尊重准则</strong>——广告费必须当期费用化，当年利润难看是规则、无法粉饰，也绝不能违规资本化；第二，<strong>看清经济实质</strong>——品牌是受益3-5年的战略无形资产，测算回收曲线和净现值为正，值得投；第三，<strong>守住风险与节奏</strong>——确认现金流可承受，把预算分批拨付、与品牌溢价和复购等跨期指标挂钩、预设止损线，并主动向董事会解释"先承压、后回收"的利润曲线。这样，财务就从"砍预算的刹车"变成了"让长期主义可度量、可控的导航"。',
+  insight:'CFO要同时看懂两张"利润表"：一张是会计期间的法定利润，一张是跨周期的价值创造。<strong>当期费用化的支出可能正在构建长期资产，关键是用现金流守住底线、用跨期ROI证明价值、用节奏和止损控制风险</strong>——长期主义不是情怀，而是被严格管理的财务决策。',
+  ability:['value','risk']
+},
+{
+  tag:'第四次 · 转型战略会',
+  title:'第二曲线：年轻化转型，All in 还是稳扎稳打',
+  agenda:'议题：传统红酒增长停滞，公司拟推出低度果酒、起泡酒切入年轻客群（第二曲线）。需要财务从必要性、盈利性、可行性、风险四个维度评估转型路径与节奏。',
+  situation:'穿越行业周期后，王朝走到了十字路口。年轻客群高速增长但传统红酒仍是现金牛，围绕"要不要转型、用多大力气"，管理层展开最后一场战略辩论。',
+  metrics:[
+    {label:'传统红酒收入',values:['增长停滞'],flag:'warn',trend:'天花板显现'},
+    {label:'年轻客群增速',values:['+25%/年'],flag:'good',trend:'新赛道'},
+    {label:'新品研发投入',values:['3000'],flag:'',trend:'一次性'},
+    {label:'预计回收期',values:['2.5年'],flag:'good',trend:'<3年门槛'},
+    {label:'新品毛利率',values:['52%'],flag:'good',trend:'接近主业'},
+    {label:'现金/负债',values:['稳健'],flag:'good',trend:'可支撑'},
+  ],
+  chart:{categories:['Y1','Y2','Y3','Y4','Y5'],series:[
+    {name:'传统业务',type:'line',data:[100,98,96,95,94]},
+    {name:'第二曲线',type:'line',data:[5,15,32,55,80]}]},
+  note:'可行性证据链：<b>新赛道高增长、新品毛利率52%接近主业、回收期2.5年优于3年门槛、资产负债表稳健——财务上具备转型条件</b>。',
+  quick:['必要性：传统业务停滞，第二曲线关乎长期生存','盈利性：新品毛利率52%，具备自我造血潜力','可行性：回收期2.5年<3年门槛，现金负债稳健','节奏性：保留现金牛、分阶段投入，而非all-in'],
+  people:[
+    {role:'销售总监',name:'郑国华',initial:'郑',tone:'#4a9eff',stance:'传统盘不能丢',
+     says:'说实话，年轻人喝传统红酒的确实越来越少，果酒起泡酒是趋势。但我要提醒，传统红酒现在还是我们唯一稳定的现金来源，经销商体系、利润都靠它，转型不能把基本盘转没了。',
+     probe:'（追问）如果要做新品，现有渠道能复用吗？',
+     reply:'能复用一部分，餐饮和电商可以铺新品，但年轻客群更多在新渠道，需要单独建，这部分要投入也需要时间。',
+     ct:'销售既确认了转型的必要性（年轻客群流失），又强调了传统现金牛的根基作用和渠道复用的现实，是稳健而可信的判断，支撑"守正出新"而非all-in。',ctType:'fact'},
+    {role:'新品负责人',name:'苏晴',initial:'苏',tone:'#a78bfa',stance:'抓住风口快速上',
+     says:'低度果酒赛道每年增长25%，这是我们触达年轻人、重塑品牌的唯一机会窗口！新品毛利率能做到52%，我建议集中资源、快速铺开，最好成立独立事业部大胆试错，错过风口就晚了。',
+     probe:'（追问）3000万研发投入之外，渠道和营销还要持续投入，2.5年回收期是基于什么假设？',
+     reply:'主要基于赛道增速和试销数据，假设我们能拿到一定份额；如果竞争加剧，回收期可能拉长到3年以上，需要公司有耐心。',
+     ct:'新品负责人提供了必要性和盈利性证据（高增长、52%毛利），但作为新业务倡导者天然偏乐观，追问后承认回收期假设存在不确定性。CFO要为这份乐观加上情景测算和止损门槛。',ctType:'bias'},
+    {role:'财务经理',name:'吴静',initial:'吴',tone:'#d4af37',stance:'四维评估+分阶段',
+     says:'我按四个维度做了评估：必要性上传统业务停滞、新赛道高增；盈利性上新品毛利52%接近主业；可行性上3000万一次性投入、回收期2.5年优于3年门槛、公司现金稳健可承受；风险上新品有不确定性。建议分阶段投入、设里程碑和止损点，传统现金牛继续供血。',
+     probe:'',reply:'',
+     ct:'财务经理把前几次会议的分析框架（趋势、毛利、回收期、资产负债表、风险）综合成了一份完整的可行性评估，这正是CFO做战略决策的标准动作。',ctType:'fact'},
+    {role:'总经理',name:'钱总',initial:'钱',tone:'#c44e52',stance:'要方向也要底线',
+     says:'我既怕错过年轻人这个未来，又怕all in新业务、传统盘又下滑，两头落空。CFO你综合判断：到底转不转、用多大力度、怎么控制不翻船？',
+     probe:'',reply:'',
+     ct:'总经理的顾虑是典型的战略权衡问题，需要CFO给出一条"既抓住未来、又不押上全部"的路径，这是对全局统筹能力的最终检验。',ctType:'risk'},
+  ],
+  question:'综合必要性、盈利性、可行性与风险，作为CFO你对年轻化转型的最终决断是？',
+  options:[
+    {text:'传统红酒是根本，拒绝新业务、专注守成',correct:false,analysis:'忽视了传统业务停滞、年轻客群流失的现实，拒绝转型虽规避风险，却会被消费趋势逐步边缘化。'},
+    {text:'年轻代表未来，应all-in转型、把资源全部压上新业务',correct:false,analysis:'盲目激进。传统业务仍是当前现金牛，all-in会丢掉基本盘，而新品回收期尚有不确定性，孤注一掷风险过高。'},
+    {text:'守住传统现金牛、控制投入节奏和现金流，用清晰的回收期门槛、里程碑和止损点分阶段培育第二曲线，实现新旧动能有序切换',correct:true,analysis:'综合运用了全部分析框架：以趋势看必要性、以毛利看盈利性、以回收期和资产负债表看可行性、以分阶段投入管理风险，是兼顾增长与安全的全局战略。'},
+    {text:'转型主要靠创意和风口，财务数据仅供参考',correct:false,analysis:'正是CFO训练要纠正的思维。任何战略都要过财务可行性这一关：回收期、毛利率、现金流承受力缺一不可。'},
+  ],
+  deduction:'最后一场会议是四场乃至整个CFO履职的集大成。评估一项战略转型，要把前几次会议的工具全部用上，形成完整证据链：用<strong>趋势分析</strong>看到传统业务见顶、新赛道高增（必要性，回应销售和新品负责人）；用<strong>本量利与毛利分析</strong>确认新品52%毛利率具备自我造血能力（盈利性）；用<strong>投资回收期</strong>（2.5年优于3年门槛）和资产负债表确认财务可承受（可行性，来自财务经理）；用<strong>风险分散</strong>原则回应总经理的顾虑——保留传统现金牛持续供血，新业务分阶段投入、设里程碑和止损点，而非all-in。最终路径是<strong>"守正出新"：传统业务守住利润和现金根基，第二曲线小步快跑、达标再加码，实现新旧动能的有序切换</strong>。',
+  insight:'从识别高毛利迷思、分类盘活存货、管理品牌跨期投入，到统筹转型节奏，CFO的核心能力一以贯之：<strong>听懂每个部门的局部立场，用报表和统一框架交叉验证，在增长、盈利、现金与风险之间做全局权衡，最终为企业的长期价值负责</strong>。这就是财务管理从"记账核算"走向"战略决策支持"的完整跃迁。',
+  ability:'strategy'
+},
+]}};
+/* APP_LOGIC */</script>
+<script>
+const App={
+  state:null,chart:null,radar:null,
+  dimName:{insight:'数据洞察力',dialogue:'跨部门研判力',strategy:'战略决断力',risk:'风险把控力',value:'全局平衡力'},
+  ctLabel:{fact:'客观事实',bias:'部门立场',risk:'风险提示'},
+
+  start(type){
+    const data=MEETINGS[type];
+    this.state={type,data,idx:0,step:'report',heard:{},probed:{},active:null,answered:false,answers:[]};
+    document.getElementById('caseDot').style.background=data.color;
+    document.getElementById('caseName').textContent=data.name;
+    document.getElementById('caseName').style.color=data.color;
+    this.showView('meeting');
+    this.renderMeeting();
+  },
+  showView(v){['start','meeting','result'].forEach(x=>document.getElementById('view-'+x).classList.toggle('hidden',x!==v));window.scrollTo(0,0);},
+  showStart(){this.state=null;this.chart=null;this.showView('start');},
+
+  renderMeeting(){
+    const s=this.state,m=s.data.list[s.idx];
+    s.step='report';s.heard={};s.probed={};s.active=null;s.answered=false;
+    document.getElementById('meetingProgress').innerHTML=s.data.list.map((_,i)=>{
+      let cls=i<s.idx?'done':i===s.idx?'current':'';return '<div class="mp-seg '+cls+'"></div>';
+    }).join('');
+    document.getElementById('meetingText').textContent='第'+(s.idx+1)+'/'+s.data.list.length+'场';
+    document.getElementById('meetTag').textContent=m.tag;
+    document.getElementById('meetTitle').textContent=m.title;
+    document.getElementById('meetAgenda').textContent=m.agenda;
+    document.getElementById('meetSituation').innerHTML=m.situation;
+    document.getElementById('metricGrid').innerHTML=m.metrics.map(x=>{
+      const vals=x.values.map(v=>'<span class="mt-val num">'+v+'</span>').join('<span style="color:var(--text3);font-size:.7rem">→</span>');
+      return '<div class="metric-tile '+x.flag+'"><div class="mt-label">'+x.label+'</div><div class="mt-values">'+vals+'</div>'+(x.trend?'<div class="mt-trend '+(x.flag==='flag'||x.flag==='warn'?'down':'up')+'">'+x.trend+'</div>':'')+'</div>';
+    }).join('');
+    document.getElementById('reportNote').innerHTML=m.note;
+    document.getElementById('cfoQuick').innerHTML='<h4>CFO 独立速读 · 先形成自己的判断</h4><ul>'+m.quick.map(q=>'<li>'+q+'</li>').join('')+'</ul>';
+    this.renderChart(m);
+    document.getElementById('peopleRow').innerHTML=m.people.map((p,i)=>
+      '<div class="person" id="person'+i+'" onclick="App.selectPerson('+i+')"><div class="p-avatar" style="background:'+p.tone+'">'+p.initial+'</div><div class="p-role">'+p.role+'</div><div class="p-name">'+p.name+'</div><span class="p-stance">'+p.stance+'</span></div>'
+    ).join('');
+    document.getElementById('talkPanel').innerHTML='<div class="talk-empty">← 点击上方任意部门负责人，开始听取他的陈述</div>';
+    document.getElementById('questionText').textContent=m.question;
+    document.getElementById('optionsBox').innerHTML=m.options.map((o,i)=>
+      '<div class="option" id="opt'+i+'" onclick="App.choose('+i+')"><div class="option-letter">'+String.fromCharCode(65+i)+'</div><div class="option-text">'+o.text+'</div></div>').join('');
+    document.getElementById('reviewPanel').classList.add('hidden');
+    this.setStep('report');
+    window.scrollTo({top:0,behavior:'smooth'});
+  },
+
+  renderChart(m){
+    if(this.chart){this.chart.dispose();this.chart=null;}
+    this.chart=echarts.init(document.getElementById('caseChart'));
+    const colors=['#4a9eff','#d4af37','#c44e52','#4ade80','#a78bfa'];
+    this.chart.setOption({
+      tooltip:{trigger:'axis',backgroundColor:'#171d2e',borderColor:'#2a3350',textStyle:{color:'#e8e6e1',fontSize:12}},
+      grid:{left:48,right:14,top:28,bottom:32},
+      legend:{textStyle:{color:'#9aa3b8',fontSize:11},top:0},
+      xAxis:{type:'category',data:m.chart.categories,axisLine:{lineStyle:{color:'#2a3350'}},axisLabel:{color:'#9aa3b8',fontSize:10.5,interval:0}},
+      yAxis:{type:'value',axisLine:{show:false},splitLine:{lineStyle:{color:'#2a3350',type:'dashed'}},axisLabel:{color:'#9aa3b8',fontSize:11}},
+      series:m.chart.series.map((sr,i)=>({name:sr.name,type:sr.type,data:sr.data,
+        itemStyle:{color:colors[i%colors.length],borderRadius:sr.type==='bar'?[3,3,0,0]:0},
+        lineStyle:{width:2.5},symbol:'circle',symbolSize:7,smooth:true,barWidth:18}))
+    });
+  },
+
+  setStep(step){
+    const s=this.state;
+    document.getElementById('stepReport').classList.toggle('hidden',step!=='report');
+    document.getElementById('stepTalk').classList.toggle('hidden',step!=='talk'&&step!=='decide');
+    document.getElementById('stepDecide').classList.toggle('hidden',step!=='decide');
+    const order=['report','talk','decide'];
+    const cur=order.indexOf(step);
+    const labels=['审阅报表','管理层会议','CFO决断'];
+    let html='';
+    labels.forEach((lb,i)=>{
+      let cls=i<cur?'done':i===cur?'active':'';
+      html+='<div class="step-node '+cls+'"><div class="sn-num">'+(i+1)+'</div>'+lb+'</div>';
+      if(i<2)html+='<div class="step-line '+(i<cur?'done':'')+'"></div>';
+    });
+    document.getElementById('stepper').innerHTML=html;
+  },
+
+  goTalk(){this.state.step='talk';this.setStep('talk');document.getElementById('stepTalk').scrollIntoView({behavior:'smooth',block:'start'});},
+
+  selectPerson(i){
+    const s=this.state,m=s.data.list[s.idx],p=m.people[i];
+    s.active=i;s.heard[i]=true;
+    m.people.forEach((_,k)=>document.getElementById('person'+k).classList.toggle('active',k===i));
+    document.getElementById('person'+i).classList.add('heard');
+    let html='<div class="bubble"><div class="b-avatar" style="background:'+p.tone+'">'+p.initial+'</div><div class="b-main"><div class="b-who">'+p.role+' · '+p.name+'（'+p.stance+'）</div><div class="b-text">'+p.says+'</div></div></div>';
+    if(s.probed[i]&&p.probe){
+      html+='<div class="bubble right"><div class="b-avatar">CFO</div><div class="b-main"><div class="b-who">你的追问</div><div class="b-text">'+p.probe+'</div></div></div>';
+      html+='<div class="bubble"><div class="b-avatar" style="background:'+p.tone+'">'+p.initial+'</div><div class="b-main"><div class="b-who">'+p.role+'的回应</div><div class="b-text">'+p.reply+'</div></div></div>';
+    } else if(p.probe){
+      html+='<button class="btn-probe" onclick="App.doProbe()">↳ 继续追问（用报表数据核实）</button>';
+    }
+    document.getElementById('talkPanel').innerHTML=html;
+    this.updateHearStatus();
+  },
+  doProbe(){const s=this.state;if(s.active===null)return;s.probed[s.active]=true;this.selectPerson(s.active);},
+  updateHearStatus(){
+    const s=this.state,m=s.data.list[s.idx];
+    const n=Object.keys(s.heard).length,total=m.people.length;
+    const btn=document.getElementById('btnToDecide');
+    document.getElementById('hearStatus').innerHTML='已听取 <b>'+n+' / '+total+'</b> 位负责人陈述'+(n<total?'，请全部听取后再形成决策':'，信息已齐备，可以形成你的决断');
+    btn.disabled=n<total;
+    btn.textContent=n<total?('还有 '+(total-n)+' 位未听取'):'形成 CFO 决策 →';
+  },
+  goDecide(){this.state.step='decide';this.setStep('decide');document.getElementById('stepDecide').scrollIntoView({behavior:'smooth',block:'start'});},
+
+  choose(i){
+    const s=this.state;if(s.answered)return;
+    s.answered=true;
+    const m=s.data.list[s.idx],chosen=m.options[i],ci=m.options.findIndex(o=>o.correct);
+    s.answers.push({idx:s.idx,chosen:i,correct:chosen.correct,ability:m.ability,title:m.title});
+    m.options.forEach((o,k)=>{
+      const el=document.getElementById('opt'+k);el.classList.add('locked');
+      if(o.correct)el.classList.add('correct');else if(k===i)el.classList.add('wrong');else el.classList.add('dimmed');
+    });
+    const head=document.getElementById('reviewHead');
+    head.className='review-head '+(chosen.correct?'right':'wrong');
+    head.textContent=chosen.correct?'✓ 决断正确 · 会议纪要':'✗ 决断偏差 · 正确方案是 '+String.fromCharCode(65+ci)+'，会议纪要如下';
+    let body='';
+    body+='<div class="ded-block"><h4>会议室里的"弦外之音" · 各部门立场甄别</h4><div class="crosstalk">'+
+      m.people.map(p=>'<div class="ct-item"><div class="ct-who"><span class="ct-dot" style="background:'+p.tone+'"></span>'+p.role+' '+p.name+'<span class="ct-tag '+p.ctType+'">'+this.ctLabel[p.ctType]+'</span></div><div class="ct-text">'+p.ct+'</div></div>').join('')+'</div></div>';
+    body+='<div class="ded-block"><h4>CFO 决策推导</h4><div class="ded-text">'+m.deduction+'</div></div>';
+    body+='<div class="ded-block"><h4>方案辨析</h4><div class="opt-analysis '+(chosen.correct?'right':'wrong')+'"><span class="oa-tag">你的决断 '+String.fromCharCode(65+i)+'</span>'+chosen.analysis+'</div>';
+    if(!chosen.correct)body+='<div class="opt-analysis right"><span class="oa-tag">正确方案 '+String.fromCharCode(65+ci)+'</span>'+m.options[ci].analysis+'</div>';
+    body+='</div>';
+    body+='<div class="insight-box"><div class="ib-title">CFO 全局财务思维</div><div class="ib-text">'+m.insight+'</div></div>';
+    document.getElementById('reviewBody').innerHTML=body;
+    document.getElementById('btnNext').textContent=s.idx>=s.data.list.length-1?'查看 CFO 胜任力评估 →':'下一场会议 →';
+    const rp=document.getElementById('reviewPanel');rp.classList.remove('hidden');
+    setTimeout(()=>rp.scrollIntoView({behavior:'smooth',block:'start'}),120);
+  },
+
+  nextMeeting(){const s=this.state;if(s.idx>=s.data.list.length-1){this.finish();return;}s.idx++;this.renderMeeting();},
+
+  finish(){
+    const s=this.state,total=s.data.list.length,correct=s.answers.filter(a=>a.correct).length;
+    const dims=['insight','dialogue','strategy','risk','value'];
+    const radarVal=dims.map(d=>{const qs=s.answers.filter(a=>[].concat(a.ability).indexOf(d)>=0);if(!qs.length)return 0;return Math.round(qs.filter(a=>a.correct).length/qs.length*100);});
+    const rate=correct/total;let label,color;
+    if(rate>=0.9){label='卓越的财务掌舵人';color='#d4af37';}
+    else if(rate>=0.75){label='成熟的 CFO 决策力';color='#4ade80';}
+    else if(rate>=0.5){label='具备全局框架，仍需打磨';color='#4a9eff';}
+    else{label='需强化三表联动与立场甄别';color='#fbbf24';}
+    document.getElementById('resultScore').textContent=correct+'/'+total;
+    document.getElementById('resultScore').style.color=color;
+    document.getElementById('resultLabel').textContent=label;
+    this.showView('result');
+    if(this.radar)this.radar.dispose();
+    this.radar=echarts.init(document.getElementById('radarChart'));
+    this.radar.setOption({tooltip:{},radar:{
+      indicator:dims.map(d=>({name:this.dimName[d],max:100})),radius:'66%',center:['50%','54%'],
+      axisName:{color:'#b8c0d4',fontSize:12},splitLine:{lineStyle:{color:'#2a3350'}},
+      splitArea:{areaStyle:{color:['#171d2e','#1a2030']}},axisLine:{lineStyle:{color:'#2a3350'}}},
+      series:[{type:'radar',data:[{value:radarVal,name:'胜任力',areaStyle:{color:'rgba(212,175,55,.22)'},lineStyle:{color:'#d4af37',width:2},itemStyle:{color:'#d4af37'}}]}]});
+    document.getElementById('minutesList').innerHTML=s.data.list.map((m,i)=>{
+      const a=s.answers[i],ok=a&&a.correct;
+      return '<div class="min-item"><span class="min-no">第'+(i+1)+'场</span><span class="min-title">'+m.title.split('：')[0]+'</span><span class="min-mark '+(ok?'ok':'no')+'">'+(ok?'决断正确':'决断偏差')+'</span></div>';
+    }).join('');
+    const weak=dims.filter((d,i)=>radarVal[i]<70).map(d=>this.dimName[d]);
+    const strong=dims.filter((d,i)=>radarVal[i]>=90).map(d=>this.dimName[d]);
+    let t='你以财务总监身份完成了'+s.data.name+'的'+total+'场管理层会议，决断正确'+correct+'场（'+(rate*100).toFixed(0)+'%）。';
+    if(strong.length)t+='在<strong>'+strong.join('、')+'</strong>上表现突出，能够穿透部门立场、用报表数据还原经营真相；';
+    if(weak.length)t+='相对薄弱的是<strong>'+weak.join('、')+'</strong>，建议重开对应会议，重点体会"弦外之音"和决策推导。';
+    t+='CFO 角色扮演的训练核心是：<strong>先独立看报表形成判断，再带着数据去听各部门陈述、甄别立场与事实，最后在增长、利润、现金与风险之间做全局权衡</strong>。现实中没有哪个部门会主动告诉你全貌，财务总监的价值，正是用三张报表这把客观标尺，把分散甚至冲突的局部信息，整合成对企业整体最优的战略决断。';
+    document.getElementById('summaryText').innerHTML=t;
+  },
+  restart(){if(this.state)this.start(this.state.type);},
+};
+window.addEventListener('resize',()=>{if(App.chart)App.chart.resize();if(App.radar)App.radar.resize();});
+</script>
+</body>
+</html>
